@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attractive Quiz App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 15px;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.6s ease;
+    }
+    h1 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    #question {
+      font-size: 18px;
+      margin-bottom: 20px;
+      animation: fadeSlide 0.5s ease;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option-btn {
+      background: #6a11cb;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 15px;
+    }
+    .option-btn:hover {
+      transform: scale(1.05);
+    }
+    .option-btn.correct {
+      background: #4caf50 !important;
+    }
+    .option-btn.wrong {
+      background: #e53935 !important;
+    }
+    #progress-container {
+      margin-top: 15px;
+      height: 8px;
+      background: #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .hidden {
+      display: none;
+    }
+    #score {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    #restart {
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #restart:hover {
+      transform: scale(1.05);
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    @keyframes fadeSlide {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>✨ Fun Quiz</h1>
+    <div id="quiz">
+      <div id="question">Question text</div>
+      <div class="options">
+        <button class="option-btn">Option 1</button>
+        <button class="option-btn">Option 2</button>
+        <button class="option-btn">Option 3</button>
+        <button class="option-btn">Option 4</button>
+      </div>
+      <div id="progress-container">
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+    <div id="result" class="hidden">
+      <h2>🎉 Your Score:</h2>
+      <p id="score"></p>
+      <button id="restart">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {question: "What is the capital of France?", options: ["London", "Paris", "Berlin", "Madrid"], answer: "Paris"},
+      {question: "Which language is known as the brain of the web?", options: ["Java", "Python", "JavaScript", "C++"], answer: "JavaScript"},
+      {question: "What does HTML stand for?", options: ["Hyper Text Makeup Language", "Hyper Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"], answer: "Hyper Text Markup Language"},
+      {question: "Smallest planet in our solar system?", options: ["Mars", "Mercury", "Venus", "Earth"], answer: "Mercury"},
+      {question: "CSS is used for?", options: ["Styling", "Logic", "Database", "Compiling"], answer: "Styling"},
+      {question: "Which gas do plants absorb?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: "Carbon Dioxide"},
+      {question: "Fastest land animal?", options: ["Cheetah", "Leopard", "Horse", "Tiger"], answer: "Cheetah"},
+      {question: "Who painted the Mona Lisa?", options: ["Van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"], answer: "Leonardo da Vinci"},
+      {question: "Which ocean is the largest?", options: ["Atlantic", "Indian", "Pacific", "Arctic"], answer: "Pacific"},
+      {question: "Which planet is called the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Saturn"], answer: "Mars"},
+      {question: "What is the currency of Japan?", options: ["Dollar", "Yen", "Won", "Peso"], answer: "Yen"},
+      {question: "Who invented the telephone?", options: ["Alexander Graham Bell", "Edison", "Tesla", "Marconi"], answer: "Alexander Graham Bell"},
+      {question: "Largest mammal in the world?", options: ["Elephant", "Blue Whale", "Shark", "Giraffe"], answer: "Blue Whale"},
+      {question: "What is the boiling point of water?", options: ["50°C", "100°C", "150°C", "200°C"], answer: "100°C"},
+      {question: "Which country invented pizza?", options: ["France", "Italy", "USA", "Spain"], answer: "Italy"},
+      {question: "How many continents are there?", options: ["5", "6", "7", "8"], answer: "7"},
+      {question: "Which device is used to measure temperature?", options: ["Thermometer", "Barometer", "Hygrometer", "Anemometer"], answer: "Thermometer"},
+      {question: "What is the national sport of Japan?", options: ["Sumo Wrestling", "Baseball", "Karate", "Judo"], answer: "Sumo Wrestling"},
+      {question: "Which element has the chemical symbol O?", options: ["Oxygen", "Gold", "Osmium", "Oxide"], answer: "Oxygen"},
+      {question: "How many degrees in a right angle?", options: ["45", "90", "180", "360"], answer: "90"}
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.querySelectorAll(".option-btn");
+    const progressBar = document.getElementById("progress-bar");
+    const resultEl = document.getElementById("result");
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const restartBtn = document.getElementById("restart");
+
+    function loadQuestion() {
+      const currentQuiz = quizData[currentQuestion];
+      questionEl.textContent = currentQuiz.question;
+      optionsEl.forEach((btn, index) => {
+        btn.textContent = currentQuiz.options[index];
+        btn.classList.remove("correct", "wrong");
+        btn.disabled = false;
+        btn.onclick = () => checkAnswer(btn, currentQuiz.options[index]);
+      });
+      progressBar.style.width = `${(currentQuestion / quizData.length) * 100}%`;
+    }
+
+    function checkAnswer(button, selected) {
+      const correctAnswer = quizData[currentQuestion].answer;
+      optionsEl.forEach(btn => btn.disabled = true);
+      if (selected === correctAnswer) {
+        button.classList.add("correct");
+        score++;
+      } else {
+        button.classList.add("wrong");
+        optionsEl.forEach(btn => {
+          if (btn.textContent === correctAnswer) {
+            btn.classList.add("correct");
+          }
+        });
+      }
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      }, 800);
+    }
+
+    function showResult() {
+      progressBar.style.width = "100%";
+      quizEl.classList.add("hidden");
+      resultEl.classList.remove("hidden");
+      scoreEl.textContent = `${score} / ${quizData.length}`;
+    }
+
+    restartBtn.onclick = () => {
+      currentQuestion = 0;
+      score = 0;
+      quizEl.classList.remove("hidden");
+      resultEl.classList.add("hidden");
+      loadQuestion();
+    };
+
+    loadQuestion();
+  </script>
+</body>
+</html>
